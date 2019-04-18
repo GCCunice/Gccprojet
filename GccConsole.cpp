@@ -66,35 +66,42 @@ std::string getMsg()
 int ControleAngle(int TensionAngle)
 {
 
-	if ((TensionAngle >= 0) && (TensionAngle <= 200))
+	if ((TensionAngle >= 0) && (TensionAngle <= 128))
 	{
-		return 90;
+		return -90;
 	}
-	else if ((TensionAngle >= 200) && (TensionAngle <= 400))
+	else if ((TensionAngle >= 128) && (TensionAngle <= 256))
 	{
-		return 70;
+		return -70;
 	}
-	else if ((TensionAngle >= 400) && (TensionAngle <= 600))
+	else if ((TensionAngle >=256) && (TensionAngle <= 384))
+	{
+		return -50;
+	}
+	else if ((TensionAngle >= 384) && (TensionAngle <= 500))
+	{
+		return -25;
+	}
+	else if ((TensionAngle >= 500) && (TensionAngle <= 550))
+	{
+		return 0;
+	}
+	else if ((TensionAngle >= 550) && (TensionAngle <= 678))
+	{
+		return 25;
+	}
+	else if ((TensionAngle >= 678) && (TensionAngle <= 806))
 	{
 		return 50;
 	}
-	/*
-	else if ((TensionAngle >= ...) && (TansionAngle <= ...))
+	else if ((TensionAngle >= 806) && (TensionAngle <= 934))
 	{
-	Angle = ...;
+		return 70;
 	}
-	else if ((TensionAngle >= ...) && (TansionAngle <= ...))
+	else if (TensionAngle > 934);
 	{
-	Angle = ...;
+		return 90;
 	}
-	else if ((TensionAngle >= ...) && (TansionAngle <= ...))
-	{
-	Angle = ...;
-	}
-	else if ((TensionAngle >= ...) && (TansionAngle <= ...))
-	{
-	Angle = ...;
-	}*/
 }
 int LOW = 0;
 int HIGH = 0;
@@ -108,62 +115,71 @@ void ControleMoteur(int Angle, int Sens, float Tension)
 	}
 
 	int VitessePWM = vitesseFloat;
-
-	if (Sens == 1)
+	if (VitessePWM < Angle)
 	{
 		if (Angle < 0)
 		{
-			analogWrite(speedPin_M2, VitessePWM);
+			analogWrite(speedPin_M2, VitessePWM+Angle);
 			digitalWrite(directionPin_M1, LOW);
-			analogWrite(speedPin_M1, VitessePWM-Angle);    // On tourne a gauche, donc on supprime l'angle a la vitesse
+			analogWrite(speedPin_M1, VitessePWM);    // On tourne a gauche, donc on supprime l'angle a la vitesse
 			digitalWrite(directionPin_M2, LOW);
 		}
 		if (Angle > 0)
 		{
-			analogWrite(speedPin_M2, VitessePWM - Angle); // On tourne a droite, donc on supprime l'angle a la vitesse
+			analogWrite(speedPin_M2, VitessePWM ); // On tourne a droite, donc on supprime l'angle a la vitesse
 			digitalWrite(directionPin_M1, LOW);
-			analogWrite(speedPin_M1, VitessePWM);   
-			digitalWrite(directionPin_M2, LOW);
-		}
-		else
-		{
-			analogWrite(speedPin_M2, VitessePWM ); // Tout droit tchou tchou
-			digitalWrite(directionPin_M1, LOW);
-			analogWrite(speedPin_M1, VitessePWM);
+			analogWrite(speedPin_M1, VitessePWM+Angle);
 			digitalWrite(directionPin_M2, LOW);
 		}
 	}
-	if (Sens == 0)
-	{
-		if (Angle < 0)
+		else if (Sens == 1)
 		{
-			analogWrite(speedPin_M2, VitessePWM);
-			digitalWrite(directionPin_M1, HIGH);
-			analogWrite(speedPin_M1, VitessePWM - Angle);    // On tourne a gauche, donc on supprime l'angle a la vitesse
-			digitalWrite(directionPin_M2, HIGH);
+			if (Angle < 0)
+			{
+				analogWrite(speedPin_M2, VitessePWM);
+				digitalWrite(directionPin_M1, LOW);
+				analogWrite(speedPin_M1, VitessePWM-Angle);    // On tourne a gauche, donc on supprime l'angle a la vitesse
+				digitalWrite(directionPin_M2, LOW);
+			}
+			if (Angle > 0)
+			{
+				analogWrite(speedPin_M2, VitessePWM - Angle); // On tourne a droite, donc on supprime l'angle a la vitesse
+				digitalWrite(directionPin_M1, LOW);
+				analogWrite(speedPin_M1, VitessePWM);   
+				digitalWrite(directionPin_M2, LOW);
+			}
+			else
+			{
+				analogWrite(speedPin_M2, VitessePWM ); // Tout droit tchou tchou
+				digitalWrite(directionPin_M1, LOW);
+				analogWrite(speedPin_M1, VitessePWM);
+				digitalWrite(directionPin_M2, LOW);
+			}
 		}
-		if (Angle > 0)
+		else if (Sens == 0)
 		{
-			analogWrite(speedPin_M2, VitessePWM - Angle); // On tourne a droite, donc on supprime l'angle a la vitesse
-			digitalWrite(directionPin_M1, HIGH);
-			analogWrite(speedPin_M1, VitessePWM);
-			digitalWrite(directionPin_M2, HIGH);
+			if (Angle < 0)
+			{
+				analogWrite(speedPin_M2, VitessePWM);
+				digitalWrite(directionPin_M1, HIGH);
+				analogWrite(speedPin_M1, VitessePWM - Angle);    // On tourne a gauche, donc on supprime l'angle a la vitesse
+				digitalWrite(directionPin_M2, HIGH);
+			}
+			if (Angle > 0)
+			{
+				analogWrite(speedPin_M2, VitessePWM - Angle); // On tourne a droite, donc on supprime l'angle a la vitesse
+				digitalWrite(directionPin_M1, HIGH);
+				analogWrite(speedPin_M1, VitessePWM);
+				digitalWrite(directionPin_M2, HIGH);
+			}
+			else
+			{
+				analogWrite(speedPin_M2, VitessePWM); // Tout droit tchou tchou
+				digitalWrite(directionPin_M1, HIGH);
+				analogWrite(speedPin_M1, VitessePWM);
+				digitalWrite(directionPin_M2, HIGH);
+			}
 		}
-		else
-		{
-			analogWrite(speedPin_M2, VitessePWM); // Tout droit tchou tchou
-			digitalWrite(directionPin_M1, HIGH);
-			analogWrite(speedPin_M1, VitessePWM);
-			digitalWrite(directionPin_M2, HIGH);
-		}
-	}
-
-
-
-
-
-	
-
 
 }
 
